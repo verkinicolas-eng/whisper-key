@@ -1,5 +1,30 @@
 # Journal de développement — whisper-key
 
+## [2026-02-21 session 2] Fix sons + hotkeys
+
+### Bugs corrigés
+- [x] **Hotkeys double-fire** : Windows envoie un double événement Ctrl → après stop, _shift=True + 2ème Ctrl déclenchait un start parasite. Fix : `return` inconditionnel après la branche Ctrl dans `_on_press`.
+- [x] **Son start silencieux** : périphérique audio en veille au moment du start → PlaySound/Beep trop courts pour survivre au wake-up (~120ms). Fix : start.wav contient 150ms de silence en pré-roll (device se réveille pendant le silence, puis la note joue).
+- [x] **Son start "bip aigu"** : remplacé par sine 460Hz/70ms avec fade 8ms, même caractère que stop (440Hz). Deux "tocs" discrets et cohérents.
+
+### Sons finaux
+| Son | Fréquence | Durée | Pré-roll |
+|-----|-----------|-------|---------|
+| start.wav | 460Hz | 70ms | 150ms silence |
+| stop.wav | 440Hz | 70ms | aucun |
+| cancel.wav | 360Hz | 50ms | aucun |
+
+### Commits
+- `3c890bf` : fix sons start/stop en toc discret (sine+fade, pre-roll 150ms)
+
+### État
+- sons : ✅ toc discret start et stop
+- hotkeys : ✅ toggle fiable, pas de double-fire
+- single-instance lock : ✅ port 37891
+- Tests manuels T1-T7 : ⏳ à compléter
+
+---
+
 ## [2026-02-21] PUBLIC RELEASE v0.1.0
 
 ### Actions

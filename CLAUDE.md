@@ -1,8 +1,8 @@
 # whisper-key — Claude Code Context
 
-## Session précédente : 2026-02-21 (COMPLÈTE)
+## Sessions précédentes : 2026-02-21 (COMPLÈTES)
 
-### Ce qui a été fait
+### Ce qui a été fait (session 1)
 1. Analyse juridique → code PinW non exploitable pour dual license → réécriture from scratch
 2. Architecture 6 modules créée (config, hotkeys, recorder, transcriber, clipboard, sounds)
 3. Bugs critiques fixés :
@@ -14,17 +14,23 @@
    - **Triple paste (3 instances simultanées)** → single-instance lock port 37891
 4. GitHub public créé, Release v0.1.0 publiée
 
+### Ce qui a été fait (session 2)
+1. **Hotkeys double-fire** : `return` inconditionnel après branche Ctrl → plus de start parasite
+2. **Son start silencieux** : start.wav avec 150ms silence pré-roll → device audio se réveille avant la note
+3. **Sons "toc" discrets** : sine+fade8ms, 460Hz start / 440Hz stop / 360Hz cancel
+4. Commit `3c890bf` + push
+
 ### État actuel
 - **GitHub** : https://github.com/verkinicolas-eng/whisper-key
 - **Release** : v0.1.0 publiée
-- **Bugs restants** : triple paste CORRIGÉ (single-instance lock), mots courts ("oui") à valider
-- **Tests manuels voix** : T1-T7 du PRODUCTION_FINAL_REPORT.md à compléter
+- **Tous les bugs connus** : CORRIGÉS
+- **Tests manuels voix** : T1-T7 du PRODUCTION_FINAL_REPORT.md — À COMPLÉTER
 
 ### Prochaine session
-1. Tester mots courts ("oui", "non") après fix no_speech_threshold + log_prob_threshold
-2. Tests manuels T1-T7 complets
-3. Commit final + communication (Reddit, HN)
-4. Build PyInstaller + WinGet manifest
+1. Tests manuels T1-T7 complets (notepad, word, excel, chrome, long, rapide, esc, alt)
+2. Communication (Reddit r/Python, r/LocalLLaMA, HN)
+3. Build PyInstaller + WinGet manifest
+4. v0.2 idées : system tray, notifications Windows
 
 ---
 
