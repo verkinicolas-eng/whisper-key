@@ -19,7 +19,10 @@ def _play(path: str) -> None:
 
 
 def play_start() -> None:
-    _play(_START_WAV)
+    # Synchronous: must complete before recorder opens the audio stream.
+    # On Windows MME, opening a new stream interrupts any concurrent winsound playback.
+    # on_start() already runs in its own daemon thread, so blocking 70ms is fine.
+    winsound.PlaySound(_START_WAV, winsound.SND_FILENAME | winsound.SND_NODEFAULT)
 
 
 def play_stop() -> None:
