@@ -19,11 +19,10 @@ def _play(path: str) -> None:
 
 
 def play_start() -> None:
-    # Async + 200ms: Windows audio device may need 80-120ms to wake from power-save.
-    # A short Beep (80ms) ends before the device finishes waking -> silent.
-    # 200ms guarantees the tail end is audible after wake-up (~80ms silent + 120ms heard).
-    # rec.start() takes ~400ms to initialize, so the sound completes well before recording.
-    threading.Thread(target=lambda: winsound.Beep(500, 200), daemon=True).start()
+    # start.wav contient 150ms silence + 80ms ton 520Hz.
+    # Le silence laisse le temps au périphérique audio de sortir de veille (~100ms),
+    # puis la note joue quand il est prêt. Même API que stop/cancel.
+    _play(_START_WAV)
 
 
 def play_stop() -> None:
