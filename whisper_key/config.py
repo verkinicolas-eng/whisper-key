@@ -20,6 +20,7 @@ DEFAULTS = {
     'audio': {
         'device': None,
         'sample_rate': 16000,
+        'max_duration': 300,
     },
     'clipboard': {
         'auto_paste': True,

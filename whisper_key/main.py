@@ -1,6 +1,7 @@
 import logging
 import signal
 import sys
+import threading
 import time
 
 from . import config
@@ -12,15 +13,14 @@ from .clipboard import copy_and_paste
 
 def _setup_logging(cfg):
     level = getattr(logging, cfg['logging']['level'], logging.INFO)
-    handlers = [logging.StreamHandler(sys.stdout)]
-
     log_path = config.get_log_path()
-    handlers.append(logging.FileHandler(log_path, encoding='utf-8'))
-
     logging.basicConfig(
         level=level,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=handlers,
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+            logging.FileHandler(log_path, encoding='utf-8'),
+        ],
     )
 
 
@@ -28,12 +28,11 @@ def main():
     cfg = config.load()
     _setup_logging(cfg)
     logger = logging.getLogger(__name__)
-
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
     rec = AudioRecorder(
         device=cfg['audio']['device'],
-        sample_rate=cfg['audio']['sample_rate'],
+        max_duration=cfg['audio'].get('max_duration', 300),
     )
 
     trans = Transcriber(
@@ -47,36 +46,46 @@ def main():
     auto_paste = cfg['clipboard']['auto_paste']
     max_retries = cfg['clipboard']['max_retries']
 
+    # Guard: prevents a new recording from starting while transcription is running
+    _processing = threading.Lock()
+
     def on_start():
+        if _processing.locked():
+            print('  ⏳ Still processing previous recording, please wait...', flush=True)
+            return
         print('  🔴 Recording...', flush=True)
         rec.start()
 
-    def on_stop(auto_enter=False):
-        audio = rec.stop()
-        if audio is None:
-            print('  ⚠ No audio captured', flush=True)
-            return
+    def _process(auto_enter=False):
+        with _processing:
+            audio = rec.stop()
+            if audio is None:
+                print('  ⚠ No audio captured', flush=True)
+                return
 
-        text = trans.transcribe(audio, rec.sample_rate)
-        if not text:
-            print('  ⚠ No speech detected', flush=True)
-            return
+            text = trans.transcribe(audio, rec.sample_rate)
+            if not text:
+                print('  ⚠ No speech detected', flush=True)
+                return
 
-        print(f'  ✓ "{text}"', flush=True)
-        copy_and_paste(
-            text,
-            auto_paste=auto_paste,
-            auto_enter=auto_enter,
-            fallback_dir=fallback_dir,
-            max_retries=max_retries,
-        )
+            print(f'  ✓ "{text}"', flush=True)
+            copy_and_paste(
+                text,
+                auto_paste=auto_paste,
+                auto_enter=auto_enter,
+                fallback_dir=fallback_dir,
+                max_retries=max_retries,
+            )
+
+    def on_stop():
+        threading.Thread(target=_process, kwargs={'auto_enter': False}, daemon=True).start()
 
     def on_cancel():
         rec.cancel()
         print('  ✗ Recording cancelled', flush=True)
 
     def on_auto_enter():
-        on_stop(auto_enter=True)
+        threading.Thread(target=_process, kwargs={'auto_enter': True}, daemon=True).start()
 
     listener = HotkeyListener(
         on_start=on_start,
@@ -85,10 +94,10 @@ def main():
         on_auto_enter=on_auto_enter,
     )
 
-    shutdown = [False]
+    shutdown = threading.Event()
 
     def handle_signal(sig, frame):
-        shutdown[0] = True
+        shutdown.set()
 
     signal.signal(signal.SIGINT, handle_signal)
     signal.signal(signal.SIGTERM, handle_signal)
@@ -96,14 +105,12 @@ def main():
     listener.start()
 
     print('🎤 whisper-key ready!')
-    print('   Ctrl+Shift → record  |  Ctrl → stop  |  Alt → stop+Enter  |  Esc → cancel')
+    print('   Ctrl+Shift → record  |  Ctrl → stop+paste  |  Alt → stop+paste+Enter  |  Esc → cancel')
     print('   Ctrl+C to quit\n', flush=True)
-
     logger.info('whisper-key started')
 
     try:
-        while not shutdown[0]:
-            time.sleep(0.1)
+        shutdown.wait()
     except KeyboardInterrupt:
         pass
     finally:
