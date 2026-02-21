@@ -19,11 +19,11 @@ def _play(path: str) -> None:
 
 
 def play_start() -> None:
-    # Beep() uses the Windows PC speaker API (winmm MessageBeep pathway), completely
-    # independent of the audio mixer. PlaySound() can silently fail when called from
-    # a pynput daemon thread at the same moment PortAudio opens the input stream.
-    # Beep() is guaranteed to play regardless of audio device state.
-    winsound.Beep(500, 80)  # 500 Hz, 80 ms — subtle, distinct from stop (440 Hz WAV)
+    # Async + 200ms: Windows audio device may need 80-120ms to wake from power-save.
+    # A short Beep (80ms) ends before the device finishes waking -> silent.
+    # 200ms guarantees the tail end is audible after wake-up (~80ms silent + 120ms heard).
+    # rec.start() takes ~400ms to initialize, so the sound completes well before recording.
+    threading.Thread(target=lambda: winsound.Beep(500, 200), daemon=True).start()
 
 
 def play_stop() -> None:
