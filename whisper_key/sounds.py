@@ -19,10 +19,11 @@ def _play(path: str) -> None:
 
 
 def play_start() -> None:
-    # Synchronous: must complete before recorder opens the audio stream.
-    # On Windows MME, opening a new stream interrupts any concurrent winsound playback.
-    # on_start() already runs in its own daemon thread, so blocking 70ms is fine.
-    winsound.PlaySound(_START_WAV, winsound.SND_FILENAME | winsound.SND_NODEFAULT)
+    # Beep() uses the Windows PC speaker API (winmm MessageBeep pathway), completely
+    # independent of the audio mixer. PlaySound() can silently fail when called from
+    # a pynput daemon thread at the same moment PortAudio opens the input stream.
+    # Beep() is guaranteed to play regardless of audio device state.
+    winsound.Beep(500, 80)  # 500 Hz, 80 ms — subtle, distinct from stop (440 Hz WAV)
 
 
 def play_stop() -> None:
