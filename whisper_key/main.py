@@ -1,5 +1,6 @@
 import logging
 import signal
+import socket
 import sys
 import threading
 import time
@@ -10,6 +11,20 @@ from .recorder import AudioRecorder
 from .transcriber import Transcriber
 from .clipboard import copy_and_paste
 from . import sounds
+
+_INSTANCE_PORT = 37891  # Arbitrary local port used as single-instance lock
+
+
+def _acquire_instance_lock():
+    """Bind to a local port to ensure only one whisper-key runs at a time."""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)
+    try:
+        sock.bind(('127.0.0.1', _INSTANCE_PORT))
+        return sock  # Keep open — released when process exits
+    except OSError:
+        sock.close()
+        return None
 
 
 def _setup_logging(cfg):
@@ -26,6 +41,11 @@ def _setup_logging(cfg):
 
 
 def main():
+    _lock_sock = _acquire_instance_lock()
+    if _lock_sock is None:
+        print('whisper-key is already running. Only one instance allowed.')
+        sys.exit(1)
+
     cfg = config.load()
     _setup_logging(cfg)
     logger = logging.getLogger(__name__)

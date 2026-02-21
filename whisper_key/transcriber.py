@@ -38,6 +38,8 @@ class Transcriber:
             condition_on_previous_text=False,
             vad_filter=use_vad,
             vad_parameters={'min_silence_duration_ms': 300} if use_vad else {},
+            no_speech_threshold=0.8,   # default 0.6 — less aggressive rejection of short words
+            log_prob_threshold=-1.5,   # default -1.0 — more tolerant for quiet/short audio
         )
 
         text = ' '.join(s.text.strip() for s in segments).strip()
