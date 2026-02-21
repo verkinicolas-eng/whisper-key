@@ -23,9 +23,9 @@ class HotkeyListener:
         with self._lock:
             if key in (keyboard.Key.ctrl_l, keyboard.Key.ctrl_r):
                 self._ctrl = True
-            elif key in (keyboard.Key.shift, keyboard.Key.shift_r):
+            elif key in (keyboard.Key.shift, keyboard.Key.shift_l, keyboard.Key.shift_r):
                 self._shift = True
-            elif key in (keyboard.Key.alt_l, keyboard.Key.alt_r):
+            elif key in (keyboard.Key.alt_l, keyboard.Key.alt_r, keyboard.Key.alt, keyboard.Key.alt_gr):
                 self._alt = True
             elif key == keyboard.Key.esc and self._recording:
                 self._recording = False
@@ -47,9 +47,9 @@ class HotkeyListener:
                     self._recording = False
                     logger.info('Stop modifier released: ctrl')
                     threading.Thread(target=self._on_stop, daemon=True).start()
-            elif key in (keyboard.Key.shift, keyboard.Key.shift_r):
+            elif key in (keyboard.Key.shift, keyboard.Key.shift_l, keyboard.Key.shift_r):
                 self._shift = False
-            elif key in (keyboard.Key.alt_l, keyboard.Key.alt_r):
+            elif key in (keyboard.Key.alt_l, keyboard.Key.alt_r, keyboard.Key.alt, keyboard.Key.alt_gr):
                 self._alt = False
                 if self._recording:
                     self._recording = False
