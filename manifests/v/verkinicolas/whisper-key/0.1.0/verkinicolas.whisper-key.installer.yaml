@@ -1,0 +1,15 @@
+PackageIdentifier: verkinicolas.whisper-key
+PackageVersion: 0.1.0
+Platform:
+- Windows.Desktop
+MinimumOSVersion: 10.0.17763.0
+InstallerType: portable
+Scope: user
+UpgradeBehavior: install
+ReleaseDate: 2026-02-21
+Installers:
+- Architecture: x64
+  InstallerUrl: https://github.com/verkinicolas-eng/whisper-key/releases/download/v0.1.0/whisper-key.zip
+  InstallerSha256: TO_BE_CALCULATED_AFTER_BUILD
+ManifestType: installer
+ManifestVersion: 1.12.0

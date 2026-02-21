@@ -1,0 +1,36 @@
+PackageIdentifier: verkinicolas.whisper-key
+PackageVersion: 0.1.0
+PackageLocale: en-US
+Publisher: Nicolas Verki (NVK Labs)
+PublisherUrl: https://github.com/verkinicolas-eng
+PublisherSupportUrl: https://github.com/verkinicolas-eng/whisper-key/issues
+Author: Nicolas Verki
+PackageName: whisper-key
+PackageUrl: https://github.com/verkinicolas-eng/whisper-key
+License: GPL-3.0-or-later OR Commercial
+LicenseUrl: https://github.com/verkinicolas-eng/whisper-key/blob/main/LICENSE
+Copyright: Copyright (c) 2026 Nicolas Verki (NVK Labs)
+ShortDescription: Local, private speech-to-text for Windows with global hotkeys
+Description: |-
+  whisper-key is a local speech-to-text application for Windows.
+  Press Ctrl+Shift to record, release Ctrl to transcribe and paste.
+  100% offline. No cloud. No API keys. No limits.
+
+  Features:
+  - Offline transcription via OpenAI Whisper
+  - Global hotkeys: Ctrl+Shift to record, Ctrl to stop
+  - Auto-paste to any application
+  - 99 languages supported
+  - Resilient clipboard handling with retry and file fallback
+Moniker: whisper-key
+Tags:
+- speech-to-text
+- dictation
+- whisper
+- transcription
+- offline
+- privacy
+- hotkeys
+- productivity
+ManifestType: defaultLocale
+ManifestVersion: 1.12.0

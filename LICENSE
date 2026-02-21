@@ -1,0 +1,57 @@
+whisper-key Dual License
+
+Copyright (c) 2026 Nicolas Verki (NVK Labs)
+
+This software is available under two licenses:
+
+═══════════════════════════════════════════════════════════════════════
+1. GNU GENERAL PUBLIC LICENSE Version 3.0 (GPLv3)
+═══════════════════════════════════════════════════════════════════════
+
+For individuals, students, educators, and open-source projects.
+
+whisper-key is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Full license text: https://www.gnu.org/licenses/gpl-3.0.html
+
+═══════════════════════════════════════════════════════════════════════
+2. COMMERCIAL LICENSE
+═══════════════════════════════════════════════════════════════════════
+
+For businesses that want to integrate whisper-key into proprietary
+software without GPL copyleft obligations.
+
+Commercial license grants:
+  - Right to use in closed-source products
+  - No GPL redistribution requirements
+  - Priority email support
+  - Future commercial-only features
+
+Pricing: EUR 49 one-time per developer seat
+Contact: https://github.com/verkinicolas-eng/whisper-key/discussions
+
+═══════════════════════════════════════════════════════════════════════
+DEPENDENCIES
+═══════════════════════════════════════════════════════════════════════
+
+This software uses the following open-source libraries, each with
+their own licenses:
+
+  - faster-whisper  (MIT)   https://github.com/SYSTRAN/faster-whisper
+  - sounddevice     (MIT)   https://python-sounddevice.readthedocs.io
+  - pynput          (LGPL)  https://github.com/moses-palmer/pynput
+  - pyperclip       (MIT)   https://github.com/asweigart/pyperclip
+  - pyautogui       (BSD-3) https://github.com/asweigart/pyautogui
+  - pystray         (LGPL)  https://github.com/moses-palmer/pystray
+  - PyYAML          (MIT)   https://github.com/yaml/pyyaml
+
+These libraries are NOT covered by the commercial license.
+They retain their respective open-source licenses.

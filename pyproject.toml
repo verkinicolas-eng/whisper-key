@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "whisper-key"
+version = "0.1.0"
+description = "Local, private speech-to-text for Windows with global hotkeys"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Nicolas Verki", email = "contact@nvklabs.com"},
+]
+keywords = ["speech-to-text", "whisper", "transcription", "hotkeys", "windows", "dictation", "offline", "privacy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "faster-whisper>=1.2.1",
+    "sounddevice>=0.4.6",
+    "numpy>=1.24.0",
+    "pyperclip>=1.8.2",
+    "pynput>=1.7.6",
+    "pyautogui>=0.9.54",
+    "pyyaml>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/verkinicolas-eng/whisper-key"
+Issues = "https://github.com/verkinicolas-eng/whisper-key/issues"
+Discussions = "https://github.com/verkinicolas-eng/whisper-key/discussions"
+
+[project.scripts]
+whisper-key = "whisper_key.main:main"
+
+[tool.setuptools.packages.find]
+include = ["whisper_key*"]
