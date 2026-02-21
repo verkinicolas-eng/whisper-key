@@ -3,6 +3,7 @@ import signal
 import sys
 import threading
 import time
+import winsound
 
 from . import config
 from .hotkeys import HotkeyListener
@@ -22,6 +23,10 @@ def _setup_logging(cfg):
             logging.FileHandler(log_path, encoding='utf-8'),
         ],
     )
+
+
+def _beep(freq, duration_ms):
+    threading.Thread(target=lambda: winsound.Beep(freq, duration_ms), daemon=True).start()
 
 
 def main():
@@ -53,6 +58,7 @@ def main():
         if _processing.locked():
             print('  ⏳ Still processing previous recording, please wait...', flush=True)
             return
+        _beep(1000, 150)
         print('  🔴 Recording...', flush=True)
         rec.start()
 
@@ -78,13 +84,16 @@ def main():
             )
 
     def on_stop():
+        _beep(800, 150)
         threading.Thread(target=_process, kwargs={'auto_enter': False}, daemon=True).start()
 
     def on_cancel():
         rec.cancel()
+        _beep(600, 100)
         print('  ✗ Recording cancelled', flush=True)
 
     def on_auto_enter():
+        _beep(800, 150)
         threading.Thread(target=_process, kwargs={'auto_enter': True}, daemon=True).start()
 
     listener = HotkeyListener(
@@ -105,7 +114,7 @@ def main():
     listener.start()
 
     print('🎤 whisper-key ready!')
-    print('   Ctrl+Shift → record  |  Ctrl → stop+paste  |  Alt → stop+paste+Enter  |  Esc → cancel')
+    print('   Ctrl+Shift → start  |  Ctrl → stop+paste  |  Alt → stop+paste+Enter  |  Esc → cancel')
     print('   Ctrl+C to quit\n', flush=True)
     logger.info('whisper-key started')
 

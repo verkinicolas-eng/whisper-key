@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 _WHISPER_RATE = 16000
 _WASAPI_REOPEN_DELAY = 0.05
-_POLL_INTERVAL_MS = 100
 
 
 class AudioRecorder:
@@ -76,15 +75,22 @@ class AudioRecorder:
                 self._frames.append(indata.copy())
 
     def stop(self):
+        # Step 1: grab stream ref and mark recording stopped — inside lock
         with self._lock:
             if self._stream is None:
                 return None
-            self._stream.stop()
-            self._stream.close()
+            stream = self._stream
             self._stream = None
+            self._recording_start = None  # Stops callback from adding more frames
+
+        # Step 2: stop stream OUTSIDE lock — avoids deadlock with callback
+        stream.stop()
+        stream.close()
+
+        # Step 3: read accumulated frames
+        with self._lock:
             frames = list(self._frames)
             self._frames = []
-            self._recording_start = None
 
         if not frames:
             logger.warning('No audio frames captured')
@@ -109,12 +115,14 @@ class AudioRecorder:
 
     def cancel(self):
         with self._lock:
-            if self._stream is not None:
-                self._stream.stop()
-                self._stream.close()
-                self._stream = None
+            stream = self._stream
+            self._stream = None
             self._frames = []
             self._recording_start = None
+
+        if stream:
+            stream.stop()
+            stream.close()
         logger.info('Recording cancelled')
 
     @property
