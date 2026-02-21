@@ -1,5 +1,37 @@
 # Journal de développement — whisper-key
 
+## [2026-02-21] PUBLIC RELEASE v0.1.0
+
+### Actions
+- [x] Fix ghost recording (can_start callback dans HotkeyListener)
+- [x] Fix VAD mots courts (<2s, vad_filter=False)
+- [x] Remplacement winsound.Beep par WAV discrets (520/440/360 Hz)
+- [x] Commit final + tag v0.1.0
+- [x] Création repo GitHub public
+- [x] Push code + tags
+- [x] Release v0.1.0 publiée
+- [x] Badges ajoutés au README
+
+### Résultat
+- whisper-key v0.1.0 PUBLIC : https://github.com/verkinicolas-eng/whisper-key
+- Code 100% NVK Labs, dual license GPLv3 + Commercial
+- 9/9 tests automatisés + 2 bugs critiques fixés
+
+### Métriques finales
+- Tests production : 9/9
+- Bugs critiques fixés : 2/2 (ghost recording, VAD courts)
+- Architecture : 6 modules propres (config, hotkeys, recorder, transcriber, clipboard, sounds)
+- Commits : 7
+
+### Prochaines étapes
+1. Tests manuels voix (T1-T7 du PRODUCTION_FINAL_REPORT)
+2. Communication (r/Python, r/LocalLLaMA)
+3. WinGet manifest
+4. PyInstaller build + installer
+5. v0.2 : system tray, notifications Windows
+
+---
+
 ## [2026-02-21] Création du projet from scratch
 
 ### Contexte

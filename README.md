@@ -1,5 +1,11 @@
 # whisper-key
 
+[![Release](https://img.shields.io/github/v/release/verkinicolas-eng/whisper-key)](https://github.com/verkinicolas-eng/whisper-key/releases)
+[![License](https://img.shields.io/badge/license-GPLv3%20%2F%20Commercial-blue)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-brightgreen)](https://www.python.org/)
+[![Platform](https://img.shields.io/badge/platform-Windows-orange)](https://www.microsoft.com/windows)
+[![Stars](https://img.shields.io/github/stars/verkinicolas-eng/whisper-key?style=social)](https://github.com/verkinicolas-eng/whisper-key)
+
 **Local, private speech-to-text for Windows with global hotkeys.**
 
 Dictate text anywhere on your PC using keyboard shortcuts. Everything runs locally — no cloud, no subscription, no data sent anywhere.
