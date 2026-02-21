@@ -27,13 +27,17 @@ class Transcriber:
 
         audio = audio.flatten().astype(np.float32)
 
+        # Disable VAD for short recordings (<2s): catches single words like "oui", "non", "ok"
+        # VAD can silently drop short speech if surrounded by minimal silence
+        use_vad = duration >= 2.0
+
         segments, info = self._model.transcribe(
             audio,
             language=self._language,
             beam_size=5,
             condition_on_previous_text=False,
-            vad_filter=True,
-            vad_parameters={'min_silence_duration_ms': 300},
+            vad_filter=use_vad,
+            vad_parameters={'min_silence_duration_ms': 300} if use_vad else {},
         )
 
         text = ' '.join(s.text.strip() for s in segments).strip()

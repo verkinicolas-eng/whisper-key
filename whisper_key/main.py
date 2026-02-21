@@ -3,13 +3,13 @@ import signal
 import sys
 import threading
 import time
-import winsound
 
 from . import config
 from .hotkeys import HotkeyListener
 from .recorder import AudioRecorder
 from .transcriber import Transcriber
 from .clipboard import copy_and_paste
+from . import sounds
 
 
 def _setup_logging(cfg):
@@ -23,10 +23,6 @@ def _setup_logging(cfg):
             logging.FileHandler(log_path, encoding='utf-8'),
         ],
     )
-
-
-def _beep(freq, duration_ms):
-    threading.Thread(target=lambda: winsound.Beep(freq, duration_ms), daemon=True).start()
 
 
 def main():
@@ -55,10 +51,7 @@ def main():
     _processing = threading.Lock()
 
     def on_start():
-        if _processing.locked():
-            print('  ⏳ Still processing previous recording, please wait...', flush=True)
-            return
-        _beep(1000, 150)
+        sounds.play_start()
         print('  🔴 Recording...', flush=True)
         rec.start()
 
@@ -84,16 +77,16 @@ def main():
             )
 
     def on_stop():
-        _beep(800, 150)
+        sounds.play_stop()
         threading.Thread(target=_process, kwargs={'auto_enter': False}, daemon=True).start()
 
     def on_cancel():
         rec.cancel()
-        _beep(600, 100)
+        sounds.play_cancel()
         print('  ✗ Recording cancelled', flush=True)
 
     def on_auto_enter():
-        _beep(800, 150)
+        sounds.play_stop()
         threading.Thread(target=_process, kwargs={'auto_enter': True}, daemon=True).start()
 
     listener = HotkeyListener(
@@ -101,6 +94,7 @@ def main():
         on_stop=on_stop,
         on_cancel=on_cancel,
         on_auto_enter=on_auto_enter,
+        can_start=lambda: not _processing.locked(),
     )
 
     shutdown = threading.Event()

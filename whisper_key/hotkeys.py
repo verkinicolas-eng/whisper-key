@@ -6,11 +6,12 @@ logger = logging.getLogger(__name__)
 
 
 class HotkeyListener:
-    def __init__(self, on_start, on_stop, on_cancel=None, on_auto_enter=None):
+    def __init__(self, on_start, on_stop, on_cancel=None, on_auto_enter=None, can_start=None):
         self._on_start = on_start
         self._on_stop = on_stop
         self._on_cancel = on_cancel
         self._on_auto_enter = on_auto_enter
+        self._can_start = can_start  # Optional: checked before setting _recording=True
 
         self._ctrl = False
         self._shift = False
@@ -58,6 +59,9 @@ class HotkeyListener:
 
             # Toggle start: Ctrl+Shift starts recording
             if self._ctrl and self._shift and not self._recording:
+                if self._can_start is not None and not self._can_start():
+                    logger.info('Start hotkey ignored: busy (transcription in progress)')
+                    return
                 self._recording = True
                 self._stop_armed = False
                 logger.info('Start hotkey: ctrl+shift')
