@@ -31,7 +31,8 @@ class HotkeyListener:
                     self._stop_armed = False
                     logger.info('Stop hotkey: ctrl press')
                     threading.Thread(target=self._on_stop, daemon=True).start()
-                    return
+                # Ctrl press never triggers start — only Shift press can trigger start
+                return
 
             elif key in (keyboard.Key.shift, keyboard.Key.shift_l, keyboard.Key.shift_r):
                 self._shift = True
